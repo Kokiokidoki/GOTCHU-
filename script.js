@@ -171,9 +171,14 @@ class CardSwiper {
         
         this.isDragging = true;
         this.isDragStarted = false;
+        
+        // デバイスタイプを判定
+        const isTouch = e.type.includes('touch');
+        const touch = isTouch ? e.touches[0] : e;
+        
         this.startPos = {
-            x: e.type === 'mousedown' ? e.clientX : e.touches[0].clientX,
-            y: e.type === 'mousedown' ? e.clientY : e.touches[0].clientY
+            x: touch.clientX,
+            y: touch.clientY
         };
         this.currentPos = { ...this.startPos };
         
@@ -182,10 +187,14 @@ class CardSwiper {
             this.activeCard.style.cursor = 'grabbing';
         }
         
-        document.addEventListener('mousemove', this.onDragMove);
-        document.addEventListener('touchmove', this.onDragMove, { passive: false });
-        document.addEventListener('mouseup', this.onDragEnd);
-        document.addEventListener('touchend', this.onDragEnd);
+        // イベントリスナーを追加（パソコンとスマホ両対応）
+        if (isTouch) {
+            document.addEventListener('touchmove', this.onDragMove, { passive: false });
+            document.addEventListener('touchend', this.onDragEnd);
+        } else {
+            document.addEventListener('mousemove', this.onDragMove);
+            document.addEventListener('mouseup', this.onDragEnd);
+        }
     }
 
     onDragMove(e) {
@@ -193,9 +202,13 @@ class CardSwiper {
         e.preventDefault();
         e.stopPropagation();
         
+        // デバイスタイプを判定
+        const isTouch = e.type.includes('touch');
+        const touch = isTouch ? e.touches[0] : e;
+        
         this.currentPos = {
-            x: e.type === 'mousemove' ? e.clientX : e.touches[0].clientX,
-            y: e.type === 'mousemove' ? e.clientY : e.touches[0].clientY
+            x: touch.clientX,
+            y: touch.clientY
         };
         
         const deltaX = this.currentPos.x - this.startPos.x;
@@ -265,13 +278,15 @@ class CardSwiper {
         }
         
         // Remove swiping class
-        this.activeCard.classList.remove('swiping');
+        if (this.activeCard) {
+            this.activeCard.classList.remove('swiping');
+        }
         
-        // Reset indicators
+        // すべてのラベルを非表示
         Object.values(this.labels).forEach(label => {
             if (label) {
-                label.style.opacity = 0;
                 label.classList.remove('visible');
+                label.style.opacity = 0;
             }
         });
         
@@ -279,34 +294,38 @@ class CardSwiper {
         const deltaY = this.currentPos.y - this.startPos.y;
         const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
         
-        // より敏感なスワイプ判定
-        let direction = null;
-        if (this.isDragStarted && distance > this.swipeThreshold) {
-            if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                direction = deltaX > 0 ? 'right' : 'left';
-            } else if (deltaY < 0) {
-                direction = 'up';
-            }
-        }
-        
-        if (direction) {
-            this.triggerSwipe(direction);
-        } else {
-            // Smooth reset animation
-            this.activeCard.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-            this.activeCard.style.transform = 'translate(0, 0) rotate(0deg) scale(1)';
-            
-            // Remove transition after animation
-            setTimeout(() => {
-                this.activeCard.style.transition = '';
-            }, 300);
-        }
-        
-        // Clean up event listeners
+        // イベントリスナーを削除
         document.removeEventListener('mousemove', this.onDragMove);
         document.removeEventListener('touchmove', this.onDragMove);
         document.removeEventListener('mouseup', this.onDragEnd);
         document.removeEventListener('touchend', this.onDragEnd);
+        
+        // スワイプ判定（ドラッグが開始されていて、閾値を超えている場合）
+        if (this.isDragStarted && distance > this.swipeThreshold) {
+            let direction = '';
+            
+            // 水平方向のスワイプを優先
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                direction = deltaX > 0 ? 'right' : 'left';
+            } else {
+                // 垂直方向のスワイプ
+                direction = deltaY < 0 ? 'up' : 'down';
+            }
+            
+            this.triggerSwipe(direction);
+        } else {
+            // スワイプしなかった場合は元の位置に戻す
+            if (this.activeCard) {
+                this.activeCard.style.transition = 'transform 0.3s ease-out';
+                this.activeCard.style.transform = 'translate(0, 0) rotate(0deg) scale(1)';
+                
+                setTimeout(() => {
+                    if (this.activeCard) {
+                        this.activeCard.style.transition = '';
+                    }
+                }, 300);
+            }
+        }
     }
 
     triggerSwipe(direction) {
@@ -356,33 +375,36 @@ class CardSwiper {
 
 class AppManager {
     constructor() {
-        // Optimized DOM caching
+        // デバイス検出
+        this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        this.isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        
+        console.log('Device detection:', {
+            isMobile: this.isMobile,
+            isTouchDevice: this.isTouchDevice,
+            userAgent: navigator.userAgent
+        });
+        
+        // DOM elements
         this.dom = {
             screens: document.querySelectorAll('.screen'),
             navDiscovery: document.getElementById('nav-discovery'),
             navPlanning: document.getElementById('nav-planning'),
             navMyPlans: document.getElementById('nav-my-plans'),
-            startPlanBtn: document.getElementById('start-plan-btn'),
-            anchorPoint: document.getElementById('anchor-point'),
-            checkInSpotName: document.getElementById('check-in-spot-name'),
-            checkInSpotImage: document.getElementById('check-in-spot-image'),
-            endOfSwipeSpotName: document.getElementById('end-of-swipe-spot-name'),
-            endOfSwipeSpotImage: document.getElementById('end-of-swipe-spot-image'),
-            decisionContainer: document.querySelector('#decision-screen .decision-list'),
-            summaryContainer: document.querySelector('#plan-summary-screen .summary-timeline'),
-            summaryTitleInput: document.getElementById('summary-title-input'),
-            savePlanBtn: document.getElementById('save-plan-btn'),
-            myPlansContainer: document.querySelector('.my-plans-container'),
-            overallRatingContainer: document.getElementById('overall-rating-container'),
-            overallRatingValue: document.getElementById('overall-rating-value'),
-            overallStarsBackground: document.getElementById('overall-stars-background'),
-            swipeActions: document.querySelector('.swipe-actions'),
             navButtons: document.querySelectorAll('.nav-btn'),
+            anchorPoint: document.getElementById('anchor-point'),
+            startPlanBtn: document.getElementById('start-plan-btn'),
+            checkInBtn: document.getElementById('check-in-btn'),
             backToDecisionBtn: document.getElementById('back-to-decision-btn'),
+            finishPlanBtn: document.getElementById('finish-plan-btn'),
+            backToPreviousBtn: document.getElementById('back-to-previous-btn'),
+            summarizeFromDecisionBtn: document.getElementById('summarize-from-decision-btn'),
+            savePlanBtn: document.getElementById('save-plan-btn'),
             editPlansBtn: document.getElementById('edit-plans-btn'),
             selectAllBtn: document.getElementById('select-all-btn'),
             deleteSelectedBtn: document.getElementById('delete-selected-btn'),
             cancelEditBtn: document.getElementById('cancel-edit-btn'),
+            myPlansContainer: document.querySelector('.my-plans-container'),
             editActions: document.querySelector('.edit-actions')
         };
 

@@ -1847,3 +1847,164 @@ input:checked + .slider:before {
     font-weight: 500;
 }
 
+/* レスポンシブ対応とデバイス別最適化 */
+@media (max-width: 768px) {
+    /* スマホ向け最適化 */
+    .card {
+        width: 90vw;
+        max-width: 350px;
+        height: 70vh;
+    }
+    
+    .swipe-title {
+        font-size: 22px;
+    }
+    
+    .swipe-subtitle {
+        font-size: 13px;
+    }
+    
+    .hero-title {
+        font-size: 40px;
+    }
+    
+    .hero-subtitle {
+        font-size: 16px;
+    }
+    
+    .action-btn {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .nav-btn {
+        min-width: 50px;
+    }
+    
+    .nav-label {
+        font-size: 10px;
+    }
+}
+
+@media (min-width: 769px) {
+    /* パソコン向け最適化 */
+    .card {
+        width: 400px;
+        max-width: 400px;
+        height: 600px;
+    }
+    
+    .swipe-title {
+        font-size: 26px;
+    }
+    
+    .swipe-subtitle {
+        font-size: 15px;
+    }
+    
+    .hero-title {
+        font-size: 52px;
+    }
+    
+    .hero-subtitle {
+        font-size: 18px;
+    }
+    
+    .action-btn {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .nav-btn {
+        min-width: 70px;
+    }
+    
+    .nav-label {
+        font-size: 12px;
+    }
+}
+
+/* タッチデバイス向け最適化 */
+@media (hover: none) and (pointer: coarse) {
+    .card {
+        touch-action: pan-x pan-y;
+    }
+    
+    .action-btn {
+        min-height: 44px; /* iOS推奨最小タッチサイズ */
+    }
+    
+    .nav-btn {
+        min-height: 44px;
+    }
+    
+    .main-button,
+    .animated-start-button {
+        min-height: 44px;
+    }
+}
+
+/* マウスデバイス向け最適化 */
+@media (hover: hover) and (pointer: fine) {
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2);
+    }
+    
+    .action-btn:hover {
+        transform: scale(1.05);
+    }
+    
+    .nav-btn:hover {
+        transform: translateY(-1px);
+    }
+}
+
+/* 高解像度ディスプレイ向け最適化 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .card-image {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* ダークモード対応 */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #1a1a1a;
+        --text-color: #ffffff;
+        --card-bg-color: #2d2d2d;
+        --subtle-gray: #3a3a3a;
+    }
+    
+    .card {
+        background: rgba(45, 45, 45, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .animated-gradient-bg {
+        background: linear-gradient(-45deg, #2d2d2d, #3a3a3a, #1a1a1a, #2d2d2d);
+    }
+}
+
+/* アクセシビリティ対応 */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .animated-gradient-bg {
+        animation: none;
+    }
+    
+    .hero-section {
+        animation: none;
+    }
+    
+    .search-section {
+        animation: none;
+    }
+}
+
