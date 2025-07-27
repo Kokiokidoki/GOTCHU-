@@ -748,6 +748,103 @@ main {
     z-index: 1; 
 }
 
+/* しおりUI用のスタイル */
+.summary-item-bookmark {
+    position: relative;
+    margin-right: 16px;
+    flex-shrink: 0;
+}
+
+.bookmark-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--main-color), #ffed4e);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(255, 212, 0, 0.3);
+}
+
+.bookmark-icon svg {
+    width: 24px;
+    height: 24px;
+    color: white;
+}
+
+.bookmark-number {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--accent-color);
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(249, 67, 68, 0.3);
+}
+
+.summary-item-image-container {
+    position: relative;
+    margin-right: 16px;
+    flex-shrink: 0;
+}
+
+.summary-item-image-container .summary-item-image { 
+    width: 120px; 
+    height: 120px; 
+    border-radius: 12px; 
+    object-fit: cover; 
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    margin-right: 0;
+}
+
+.image-overlay {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+
+.visit-badge {
+    background: rgba(46, 204, 113, 0.9);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+}
+
+.summary-item-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 12px;
+}
+
+.visit-date, .visit-time {
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.star-rating-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rating-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
 .summary-item-content { 
     display: flex; 
     width: 100%; 
@@ -790,6 +887,8 @@ main {
     color: var(--visited-color); 
 }
 
+
+
 .overall-rating-container { 
     background: var(--card-bg-color); 
     border-radius: 12px; 
@@ -811,25 +910,27 @@ main {
 .overall-rating-container h3 { 
     margin: 0 0 10px 0; 
     font-size: 18px; 
+    text-align: center;
 }
 
-.overall-stars-wrapper {
-    position: relative;
-    display: inline-flex;
+.overall-rating-display {
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
     gap: 12px;
+    margin-top: 16px;
 }
 
-#overall-stars-background, #overall-stars-foreground { 
-    display: flex; 
-    gap: 4px; 
+.overall-stars-container {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
 }
 
 #overall-stars-background svg { 
     color: #d1d5db; 
-    width: 24px; 
-    height: 24px; 
+    width: 32px; 
+    height: 32px; 
     transition: color var(--transition-fast) ease; 
 }
 
@@ -837,27 +938,21 @@ main {
     color: var(--visited-color); 
 }
 
-#overall-stars-foreground { 
-    position: absolute; 
-    top: 0; 
-    left: 0; 
-    white-space: nowrap; 
-    overflow: hidden; 
-    width: 0%; 
-    transition: width var(--transition-slow) ease; 
-}
-
-#overall-stars-foreground svg { 
-    color: var(--visited-color); 
-    cursor: default; 
+.overall-rating-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #overall-rating-value {
-    font-size: 20px;
+    font-size: 28px;
     font-weight: 700;
     color: var(--text-color);
+    background: linear-gradient(135deg, var(--visited-color), #ffed4e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     line-height: 1;
-    margin-left: 0;
 }
 
 .publish-toggle { 

@@ -2,15 +2,15 @@
 
 // --- DATA ---
 const spotData = [
-    { id: 0, name: '雷門', category: 'ランドマーク', image: 'https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=800&h=600&fit=crop', distance: '現在地', tags: ['#定番', '#写真映え', '#浅草'], ugc: '浅草のシンボル。大きな提灯が印象的！', congestion: 'busy', mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3239.58346362748!2d139.79363337664867!3d35.711866572577414!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188ec130fbdd3d%3A0x5135221a7fa19dbc!2z5Luy6KaL5LiW5ZWG5bqX6KGX!5e0!3m2!1sja!2sjp!4v1753536012983!5m2!1sja!2sjp' },
-    { id: 1, name: '仲見世商店街', category: '商店街', image: 'https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=800&h=600&fit=crop', distance: '徒歩 2分', tags: ['#食べ歩き', '#お土産', '#定番'], ugc: '雷門に来た人の85%が次に訪れています', congestion: 'busy', mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3239.58346362748!2d139.79363337664867!3d35.711866572577414!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188ec130fbdd3d%3A0x5135221a7fa19dbc!2z5Luy6KaL5LiW5ZWG5bqX6KGX!5e0!3m2!1sja!2sjp!4v1753536012983!5m2!1sja!2sjp' },
-    { id: 2, name: '東京スカイツリー', category: '展望台', image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&h=600&fit=crop', distance: '電車で 5分', tags: ['#絶景', '#写真映え', '#デート'], ugc: '景色もいいし、水族館もあって一日中楽しめる！', congestion: 'normal', mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3239.115817818457!2d139.808125476359!3d35.71006267258411!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188ed0d12f9adf%3A0x7d1d4fb31f43f72a!2z5p2x5Lqs44K544Kr44Kk44OE44Oq44O8!5e0!3m2!1sja!2sjp!4v1626490800000!5m2!1sja!2sjp' },
-    { id: 3, name: '浅草花やしき', category: '遊園地', image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop', distance: '徒歩 10分', tags: ['#レトロ', '#アトラクション'], ugc: '日本最古の遊園地。レトロな雰囲気が最高。', congestion: 'free', mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3239.4373601884595!2d139.79230247664873!3d35.71546087257617!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188ec02219773d%3A0x6bb2077ac9a688b1!2z5rWF6I2J6Iqx44KE44GX44GN!5e0!3m2!1sja!2sjp!4v1753536782138!5m2!1sja!2sjp' },
-    { id: 4, name: 'アサヒビールタワー', category: 'ランドマーク', image: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&h=600&fit=crop', distance: '徒歩 8分', tags: ['#ビール', '#建築'], ugc: '金のオブジェが目印。できたてビールが飲める！', congestion: 'normal', mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25917.271699053865!2d139.7624180743164!3d35.7100091!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188f006b657881%3A0xa45960d4ee2a08e4!2z44Ki44K144OS44OT44O844Or5qCq5byP5Lya56S-IOacrOekvg!5e0!3m2!1sja!2sjp!4v1753535974816!5m2!1sja!2sjp' },
-    { id: 5, name: 'すみだ水族館', category: '水族館', image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&h=600&fit=crop', distance: '電車で 5分', tags: ['#ペンギン', '#屋内', '#ファミリー'], ugc: 'スカイツリーのすぐ下。セットで行くのがおすすめ！', congestion: 'normal', mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1707.7292348776461!2d139.8080527427319!3d35.71073302936448!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188ed6ddcaa63b%3A0x52f9e68583464160!2z44GZ44G_44Gg5rC05peP6aSo!5e0!3m2!1sja!2sjp!4v1753535899785!5m2!1sja!2sjp' },
-    { id: 6, name: '麻布台ヒルズ', category: '商業施設', image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop', distance: '電車で 30分', tags: ['#最新', '#ショッピング', '#展望'], ugc: '新しい東京の景色が見える。お店もたくさん！', congestion: 'busy', mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1620.8138198158636!2d139.74083018597958!3d35.66154472830695!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188b2e40342225%3A0x3f9a1673138a69c1!2z6bq75biD5Y-w44OS44Or44K6!5e0!3m2!1sja!2sjp!4v1753552175524!5m2!1sja!2sjp' },
-    { id: 7, name: 'NISSAN CROSSING', category: 'ショールーム', image: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=600&fit=crop', distance: '電車で 35分', tags: ['#車', '#テクノロジー', '#銀座'], ugc: '未来のコンセプトカーがすごい。銀座の真ん中。', congestion: 'normal', mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3241.248036918198!2d139.7624558757831!3d35.67089413054177!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188be660fa5107%3A0x1f7a3a701bab5f37!2sNISSAN%20CROSSING!5e0!3m2!1sja!2sjp!4v1753552301405!5m2!1sja!2sjp' },
-    { id: 8, name: 'Tokyo Innovation Base', category: 'イノベーション拠点', image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop', distance: '電車で 25分', tags: ['#スタートアップ', '#イベント', '#丸の内'], ugc: '新しいアイデアが生まれる場所。イベントも面白い。', congestion: 'free', mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3241.0568212847743!2d139.76020148499933!3d35.675602859621!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188b0010c11939%3A0xe6744989593aab42!2sTokyo%20Innovation%20Base!5e0!3m2!1sja!2sjp!4v1753552426445!5m2!1sja!2sjp' },
+    { id: 0, name: '雷門', category: 'ランドマーク', image: 'https://www.senso-ji.jp/images/guide/images/guide01_img01.jpg', distance: '現在地', tags: ['#定番', '#写真映え', '#浅草'], ugc: '浅草のシンボル。大きな提灯が印象的！', congestion: 'busy', mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3239.58346362748!2d139.79363337664867!3d35.711866572577414!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188ec130fbdd3d%3A0x5135221a7fa19dbc!2z5Luy6KaL5LiW5ZWG5bqX6KGX!5e0!3m2!1sja!2sjp!4v1753536012983!5m2!1sja!2sjp' },
+    { id: 1, name: '仲見世商店街', category: '商店街', image: 'https://e-asakusa.jp/wp-content/uploads/nakamise1-1024x768.jpg', distance: '徒歩 2分', tags: ['#食べ歩き', '#お土産', '#定番'], ugc: '雷門に来た人の85%が次に訪れています', congestion: 'busy', mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3239.58346362748!2d139.79363337664867!3d35.711866572577414!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188ec130fbdd3d%3A0x5135221a7fa19dbc!2z5Luy6KaL5LiW5ZWG5bqX6KGX!5e0!3m2!1sja!2sjp!4v1753536012983!5m2!1sja!2sjp' },
+    { id: 2, name: '東京スカイツリー', category: '展望台', image: 'https://www.tokyo-skytree.jp/enjoy/experience-tokyo-skytree/image/section/about/img-1-sp.webp', distance: '電車で 5分', tags: ['#絶景', '#写真映え', '#デート'], ugc: '景色もいいし、水族館もあって一日中楽しめる！', congestion: 'normal', mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3239.115817818457!2d139.808125476359!3d35.71006267258411!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188ed0d12f9adf%3A0x7d1d4fb31f43f72a!2z5p2x5Lqs44K544Kr44Kk44OE44Oq44O8!5e0!3m2!1sja!2sjp!4v1626490800000!5m2!1sja!2sjp' },
+    { id: 3, name: '浅草花やしき', category: '遊園地', image: 'https://tabiiro.jp/lpimg/leisure/206792/main/img4.jpg', distance: '徒歩 10分', tags: ['#レトロ', '#アトラクション'], ugc: '日本最古の遊園地。レトロな雰囲気が最高。', congestion: 'free', mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3239.4373601884595!2d139.79230247664873!3d35.71546087257617!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188ec02219773d%3A0x6bb2077ac9a688b1!2z5rWF6I2J6Iqx44KE44GX44GN!5e0!3m2!1sja!2sjp!4v1753536782138!5m2!1sja!2sjp' },
+    { id: 4, name: 'アサヒビールタワー', category: 'ランドマーク', image: 'https://www.tokyo-jimushosagashi.com/column/wp-content/uploads/2024/06/03-38.jpg', distance: '徒歩 8分', tags: ['#ビール', '#建築'], ugc: '金のオブジェが目印。できたてビールが飲める！', congestion: 'normal', mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25917.271699053865!2d139.7624180743164!3d35.7100091!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188f006b657881%3A0xa45960d4ee2a08e4!2z44Ki44K144OS44OT44O844Or5qCq5byP5Lya56S-IOacrOekvg!5e0!3m2!1sja!2sjp!4v1753535974816!5m2!1sja!2sjp' },
+    { id: 5, name: 'すみだ水族館', category: '水族館', image: 'https://prtimes.jp/i/23075/166/resize/d23075-166-568493-0.jpg', distance: '電車で 5分', tags: ['#ペンギン', '#屋内', '#ファミリー'], ugc: 'スカイツリーのすぐ下。セットで行くのがおすすめ！', congestion: 'normal', mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1707.7292348776461!2d139.8080527427319!3d35.71073302936448!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188ed6ddcaa63b%3A0x52f9e68583464160!2z44GZ44G_44Gg5rC05peP6aSo!5e0!3m2!1sja!2sjp!4v1753535899785!5m2!1sja!2sjp' },
+    { id: 6, name: '麻布台ヒルズ', category: '商業施設', image: 'https://theplace.jp/wp-content/uploads/2023/11/azabudai_hills.jpg', distance: '電車で 30分', tags: ['#最新', '#ショッピング', '#展望'], ugc: '新しい東京の景色が見える。お店もたくさん！', congestion: 'busy', mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1620.8138198158636!2d139.74083018597958!3d35.66154472830695!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188b2e40342225%3A0x3f9a1673138a69c1!2z6bq75biD5Y-w44OS44Or44K6!5e0!3m2!1sja!2sjp!4v1753552175524!5m2!1sja!2sjp' },
+    { id: 7, name: 'NISSAN CROSSING', category: 'ショールーム', image: 'https://www.nissan.co.jp/crossing/sites/default/files/img/Cylinder_Carousel.jpg', distance: '電車で 35分', tags: ['#車', '#テクノロジー', '#銀座'], ugc: '未来のコンセプトカーがすごい。銀座の真ん中。', congestion: 'normal', mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3241.248036918198!2d139.7624558757831!3d35.67089413054177!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188be660fa5107%3A0x1f7a3a701bab5f37!2sNISSAN%20CROSSING!5e0!3m2!1sja!2sjp!4v1753552301405!5m2!1sja!2sjp' },
+    { id: 8, name: 'Tokyo Innovation Base', category: 'イノベーション拠点', image: 'https://workmill.jp/jp/wp-content/uploads/sites/2/2024/07/L1140562-1024x683.jpg', distance: '電車で 25分', tags: ['#スタートアップ', '#イベント', '#丸の内'], ugc: '新しいアイデアが生まれる場所。イベントも面白い。', congestion: 'free', mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3241.0568212847743!2d139.76020148499933!3d35.675602859621!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188b0010c11939%3A0xe6744989593aab42!2sTokyo%20Innovation%20Base!5e0!3m2!1sja!2sjp!4v1753552426445!5m2!1sja!2sjp' },
 ];
 
 // Discovery data (copy with different IDs)
@@ -283,7 +283,11 @@ class CardSwiper {
         if (direction === 'right') resultType = 'liked';
         else if (direction === 'up') resultType = 'visited';
         
-        this.results[resultType].push(cardData);
+        // 重複を防ぐ（同じスポットを複数回追加しない）
+        const alreadyExists = this.results[resultType].some(result => result.id === cardData.id);
+        if (!alreadyExists) {
+            this.results[resultType].push(cardData);
+        }
         
         // Add swipe-out class for smooth animation
         this.activeCard.classList.add('swipe-out');
@@ -394,6 +398,7 @@ class AppManager {
         this.dom.navPlanning.addEventListener('click', () => {
             if (this.isTransitioning) return;
             this.currentPlan = { anchor: null, visitedSpots: [] };
+            this.lastSwipeResults = null; // 前回のスワイプ結果をリセット
             this.swiper.reset();
             this.dom.anchorPoint.value = '';
             this.switchToScreen('planning-screen');
@@ -448,7 +453,20 @@ class AppManager {
                 alert('出発地点を入力してください');
                 return;
             }
-            this.currentPlan.anchor = anchorValue;
+            
+            // プランを初期化
+            this.currentPlan = { 
+                anchor: anchorValue, 
+                visitedSpots: [] 
+            };
+            
+            // 雷門の画像を設定
+            const kaminarimonSpot = spotData.find(spot => spot.name === '雷門');
+            if (kaminarimonSpot) {
+                this.dom.checkInSpotName.textContent = kaminarimonSpot.name;
+                this.dom.checkInSpotImage.style.backgroundImage = `url('${kaminarimonSpot.image}')`;
+            }
+            
             this.switchToScreen('check-in-screen');
         };
 
@@ -456,6 +474,13 @@ class AppManager {
     }
 
     initCheckInScreen() {
+        // チェックイン画面の初期化：雷門の画像を設定
+        const kaminarimonSpot = spotData.find(spot => spot.name === '雷門');
+        if (kaminarimonSpot) {
+            this.dom.checkInSpotName.textContent = kaminarimonSpot.name;
+            this.dom.checkInSpotImage.style.backgroundImage = `url('${kaminarimonSpot.image}')`;
+        }
+        
         document.getElementById('check-in-btn').addEventListener('click', () => {
             if (this.isTransitioning) return;
             const visitedSpotIds = new Set(this.currentPlan.visitedSpots.map(spot => spot.id).filter(id => id !== undefined && id !== null));
@@ -472,6 +497,10 @@ class AppManager {
 
         this.dom.backToDecisionBtn?.addEventListener('click', () => {
             if (this.isTransitioning) return;
+            // 前回のスワイプ結果を保持して決定画面に戻る
+            if (this.lastSwipeResults && this.lastSwipeResults.liked.length > 0) {
+                this.populateDecisionScreen(this.lastSwipeResults.liked);
+            }
             this.switchToScreen('decision-screen');
         });
     }
@@ -523,6 +552,9 @@ class AppManager {
     }
 
     handleSwipeComplete(results) {
+        // スワイプ結果を保存
+        this.lastSwipeResults = results;
+        
         if (results.liked.length > 0) {
             this.populateDecisionScreen(results.liked);
             this.switchToScreen('decision-screen');
@@ -544,7 +576,12 @@ class AppManager {
         this.dom.decisionContainer.innerHTML = '';
         const fragment = document.createDocumentFragment();
         
-        likedSpots.forEach(spot => {
+        // 重複を除去（IDで判定）
+        const uniqueSpots = likedSpots.filter((spot, index, self) => 
+            index === self.findIndex(s => s.id === spot.id)
+        );
+        
+        uniqueSpots.forEach(spot => {
             const itemEl = document.createElement('div');
             itemEl.className = 'decision-item';
             itemEl.innerHTML = `
@@ -579,7 +616,22 @@ class AppManager {
         this.dom.summaryContainer.innerHTML = '';
         const fragment = document.createDocumentFragment();
         
-        plan.visitedSpots.forEach((spot, index) => {
+        // 後方互換性のため、spotsとvisitedSpotsの両方をチェック
+        const visitedSpots = plan.visitedSpots || plan.spots || [];
+        
+        // visitedSpotsが存在しない場合の処理を追加
+        if (visitedSpots.length === 0) {
+            const emptyMessage = document.createElement('div');
+            emptyMessage.className = 'summary-empty-message';
+            emptyMessage.innerHTML = '<p>まだ訪れたスポットがありません</p>';
+            this.dom.summaryContainer.appendChild(emptyMessage);
+            return;
+        }
+        
+        // プランオブジェクトが渡された場合（過去のプラン）はしおりUI、そうでなければ通常のUI
+        const isHistoricalPlan = planObject !== null;
+        
+        visitedSpots.forEach((spot, index) => {
             const itemEl = document.createElement('div');
             itemEl.className = 'summary-item';
             itemEl.dataset.rating = spot.rating || 0;
@@ -589,16 +641,50 @@ class AppManager {
                 return `<svg class="${isFilled}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>`;
             }).join('');
             
-            itemEl.innerHTML = `
-                <div class="summary-item-step">${index + 1}</div>
-                <div class="summary-item-content">
-                    <img class="summary-item-image" src="${spot.image}" alt="${spot.name}" onerror="this.onerror=null;this.src='https://placehold.co/60x60/e2e8f0/94a3b8?text=Image';">
-                    <div class="summary-item-details">
-                        <h3 class="summary-item-name">${spot.name}</h3>
-                        <div class="star-rating">${starsHtml}</div>
+            if (isHistoricalPlan) {
+                // 過去のプラン用のしおりUI
+                itemEl.innerHTML = `
+                    <div class="summary-item-bookmark">
+                        <div class="bookmark-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
+                            </svg>
+                        </div>
+                        <div class="bookmark-number">${index + 1}</div>
                     </div>
-                </div>
-            `;
+                    <div class="summary-item-content">
+                        <div class="summary-item-image-container">
+                            <img class="summary-item-image" src="${spot.image}" alt="${spot.name}" onerror="this.onerror=null;this.src='https://placehold.co/120x120/e2e8f0/94a3b8?text=Image';">
+                            <div class="image-overlay">
+                                <div class="visit-badge">訪問済み</div>
+                            </div>
+                        </div>
+                        <div class="summary-item-details">
+                            <h3 class="summary-item-name">${spot.name}</h3>
+                            <div class="summary-item-meta">
+                                <span class="visit-date">訪問日: ${new Date().toLocaleDateString('ja-JP')}</span>
+                                <span class="visit-time">訪問時刻: ${new Date().toLocaleTimeString('ja-JP', {hour: '2-digit', minute: '2-digit'})}</span>
+                            </div>
+                            <div class="star-rating-container">
+                                <span class="rating-label">評価:</span>
+                                <div class="star-rating">${starsHtml}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // 新規作成時の通常UI
+                itemEl.innerHTML = `
+                    <div class="summary-item-step">${index + 1}</div>
+                    <div class="summary-item-content">
+                        <img class="summary-item-image" src="${spot.image}" alt="${spot.name}" onerror="this.onerror=null;this.src='https://placehold.co/60x60/e2e8f0/94a3b8?text=Image';">
+                        <div class="summary-item-details">
+                            <h3 class="summary-item-name">${spot.name}</h3>
+                            <div class="star-rating">${starsHtml}</div>
+                        </div>
+                    </div>
+                `;
+            }
             
             const starContainer = itemEl.querySelector('.star-rating');
             starContainer.addEventListener('click', (e) => {
@@ -616,6 +702,12 @@ class AppManager {
         });
         
         this.dom.summaryContainer.appendChild(fragment);
+        
+        // 総合評価の星を初期化
+        this.dom.overallStarsBackground.innerHTML = Array.from({length: 5}, () => 
+            `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>`
+        ).join('');
+        
         this.updateOverallRating();
     }
 
@@ -637,6 +729,7 @@ class AppManager {
         const averageRating = ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length;
         this.dom.overallRatingValue.textContent = averageRating.toFixed(1);
         
+        // 星の表示を更新
         const stars = this.dom.overallStarsBackground.querySelectorAll('svg');
         const filledCount = Math.floor(averageRating);
         
@@ -661,7 +754,7 @@ class AppManager {
         const plan = {
             id: Date.now(),
             title: title,
-            spots: this.currentPlan.visitedSpots,
+            visitedSpots: this.currentPlan.visitedSpots,
             createdAt: new Date().toISOString()
         };
         
@@ -715,8 +808,11 @@ class AppManager {
             planCard.className = 'plan-card';
             planCard.dataset.planId = plan.id;
             
-            const imageUrl = plan.spots && plan.spots.length > 0 && plan.spots[0].image 
-                ? plan.spots[0].image 
+            // 後方互換性のため、spotsとvisitedSpotsの両方をチェック
+            const spots = plan.visitedSpots || plan.spots || [];
+            
+            const imageUrl = spots.length > 0 && spots[0].image 
+                ? spots[0].image 
                 : 'https://placehold.co/80x80/e2e8f0/94a3b8?text=Image';
             
             const createdDate = new Date(plan.createdAt);
@@ -726,7 +822,7 @@ class AppManager {
                 day: 'numeric'
             });
             
-            const ratings = plan.spots.map(spot => spot.rating || 0).filter(rating => rating > 0);
+            const ratings = spots.map(spot => spot.rating || 0).filter(rating => rating > 0);
             let averageRating = 0;
             let ratingDisplay = '';
             
@@ -746,7 +842,7 @@ class AppManager {
                 <div class="plan-card-image" style="background-image: url('${imageUrl}')"></div>
                 <div class="plan-card-content">
                     <h3 class="plan-card-title">${plan.title}</h3>
-                    <p class="plan-card-meta">${plan.spots.length}個のスポット</p>
+                    <p class="plan-card-meta">${spots.length}個のスポット</p>
                     ${ratingDisplay}
                     <p class="plan-card-date">作成日: ${formattedDate}</p>
                 </div>
