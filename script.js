@@ -182,6 +182,11 @@ class CardSwiper {
             this.activeCard.style.cursor = 'grabbing';
         }
         
+        // タッチデバイスでのスクロール防止
+        if (e.type === 'touchstart') {
+            document.body.style.overflow = 'hidden';
+        }
+        
         document.addEventListener('mousemove', this.onDragMove);
         document.addEventListener('touchmove', this.onDragMove, { passive: false });
         document.addEventListener('mouseup', this.onDragEnd);
@@ -263,6 +268,9 @@ class CardSwiper {
         if (this.activeCard) {
             this.activeCard.style.cursor = 'grab';
         }
+        
+        // タッチデバイスでのスクロール復元
+        document.body.style.overflow = '';
         
         // Remove swiping class
         this.activeCard.classList.remove('swiping');
@@ -428,6 +436,12 @@ class AppManager {
         setTimeout(() => {
             this.setButtonSizes();
         }, 100);
+        
+        // 初期画面を表示
+        this.switchToScreen('planning-screen');
+        
+        // モバイルデバイスでの最適化
+        this.optimizeForMobile();
     }
 
     initNavigation() {
@@ -540,6 +554,9 @@ class AppManager {
                 visitedSpots: [] 
             };
             
+            // スワイプ結果をリセット
+            this.lastSwipeResults = null;
+            
             // 雷門の画像を設定
             const kaminarimonSpot = spotData.find(spot => spot.name === '雷門');
             if (kaminarimonSpot) {
@@ -584,8 +601,11 @@ class AppManager {
             // 前回のスワイプ結果を保持して決定画面に戻る
             if (this.lastSwipeResults && this.lastSwipeResults.liked.length > 0) {
                 this.populateDecisionScreen(this.lastSwipeResults.liked);
+                this.switchToScreen('decision-screen');
+            } else {
+                // スワイプ結果がない場合はエンドオブスワイプ画面に
+                this.switchToScreen('end-of-swipe-screen');
             }
-            this.switchToScreen('decision-screen');
         });
     }
 
@@ -768,6 +788,7 @@ class AppManager {
             const itemEl = document.createElement('div');
             itemEl.className = 'summary-item';
             itemEl.dataset.rating = spotWithRating.rating;
+            itemEl.dataset.spotId = spotWithRating.id;
             
             const starsHtml = Array.from({length: 5}, (_, i) => {
                 const isFilled = i < spotWithRating.rating ? 'filled' : '';
@@ -865,6 +886,39 @@ class AppManager {
                 star.classList.toggle('filled', index < rating);
             });
         };
+        
+        // 星評価のクリックイベントを設定
+        this.dom.summaryContainer.addEventListener('click', (e) => {
+            const star = e.target.closest('.star-rating svg');
+            if (!star) return;
+            
+            const starContainer = star.closest('.star-rating');
+            const summaryItem = star.closest('.summary-item');
+            const stars = starContainer.querySelectorAll('svg');
+            const clickedIndex = Array.from(stars).indexOf(star);
+            const rating = clickedIndex + 1;
+            
+            // 星の表示を更新
+            this.setRating(starContainer, rating);
+            
+            // スポットのratingを更新
+            const spotId = parseInt(summaryItem.dataset.spotId);
+            const spotWithRating = this.currentDisplayPlan.visitedSpots.find(s => s.id === spotId);
+            if (spotWithRating) {
+                spotWithRating.rating = rating;
+            }
+            
+            // currentDisplayPlanのスポットも更新
+            if (this.currentDisplayPlan && this.currentDisplayPlan.visitedSpots) {
+                const spotToUpdate = this.currentDisplayPlan.visitedSpots.find(s => s.id === spotId);
+                if (spotToUpdate) {
+                    spotToUpdate.rating = rating;
+                }
+            }
+            
+            // 総合評価を更新
+            this.updateOverallRating();
+        });
     }
 
     updateOverallRating() {
@@ -1017,10 +1071,16 @@ class AppManager {
         // currentDisplayPlanから正しいデータを取得
         const visitedSpots = this.currentDisplayPlan ? this.currentDisplayPlan.visitedSpots : this.currentPlan.visitedSpots;
         
+        // データの整合性を確保
+        const validatedSpots = (visitedSpots || []).map(spot => ({
+            ...spot,
+            rating: spot.rating || 0
+        }));
+        
         const plan = {
             id: Date.now(),
             title: title,
-            visitedSpots: visitedSpots || [],
+            visitedSpots: validatedSpots,
             createdAt: new Date().toISOString()
         };
         
@@ -1361,6 +1421,34 @@ class AppManager {
             localStorage.setItem('saved_plans', JSON.stringify(updatedPlans));
             this.exitEditMode();
             this.displaySavedPlans();
+        }
+    }
+    
+    optimizeForMobile() {
+        // タッチデバイスでの最適化
+        if ('ontouchstart' in window) {
+            // タッチデバイスでのスクロール防止
+            document.addEventListener('touchmove', (e) => {
+                if (e.target.closest('.card-area') || e.target.closest('.swipe-actions')) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+            
+            // ダブルタップズーム防止
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', (e) => {
+                const now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    e.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+        }
+        
+        // ビューポートの設定
+        const viewport = document.querySelector('meta[name="viewport"]');
+        if (viewport) {
+            viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
         }
     }
 }

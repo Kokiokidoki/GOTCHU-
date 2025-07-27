@@ -26,6 +26,12 @@
 * { 
     box-sizing: border-box; 
     -webkit-tap-highlight-color: transparent; 
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 html, body { 
@@ -93,7 +99,7 @@ body.theme-planning {
 }
 
 .hero-title {
-    font-size: 48px;
+    font-size: clamp(32px, 8vw, 48px);
     font-weight: 900;
     margin: 0 0 16px 0;
     background: linear-gradient(135deg, #333, #666);
@@ -105,7 +111,7 @@ body.theme-planning {
 }
 
 .hero-subtitle {
-    font-size: 18px;
+    font-size: clamp(14px, 4vw, 18px);
     color: #666;
     margin: 0;
     font-weight: 400;
@@ -180,6 +186,9 @@ body.theme-planning {
     color: #333;
     outline: none;
     border-radius: 50px;
+    /* スマートフォンでのズーム防止 */
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .animated-search-input::placeholder {
@@ -733,7 +742,7 @@ main {
 /* Swipe Actions */
 .swipe-actions { 
     position: fixed; 
-    bottom: 80px; 
+    bottom: calc(80px + env(safe-area-inset-bottom)); 
     left: 50%; 
     transform: translateX(-50%); 
     display: flex; 
@@ -746,54 +755,125 @@ main {
 }
 
 .action-btn { 
-    width: 60px; 
-    height: 60px; 
+    width: clamp(50px, 15vw, 60px); 
+    height: clamp(50px, 15vw, 60px); 
     border-radius: 50%; 
-    border: 1px solid #ddd; 
-    background-color: var(--card-bg-color); 
-    box-shadow: var(--shadow-light); 
+    border: none; 
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.12),
+        0 4px 16px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
     display: flex; 
     align-items: center; 
     justify-content: center; 
     cursor: pointer; 
-    transition: all var(--transition-fast) ease; 
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1));
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.action-btn::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.3));
+    border-radius: 50%;
+    opacity: 0.6;
+    z-index: -1;
+}
+
+.action-btn:hover::before {
+    opacity: 1;
 }
 
 .action-btn:hover { 
-    transform: scale(1.1); 
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.15),
+        0 6px 20px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 .action-btn:active { 
-    transform: scale(0.95); 
-    transition: transform 0.1s ease; 
+    transform: scale(0.98) translateY(0);
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.1),
+        0 2px 8px rgba(0, 0, 0, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    transition: all 0.1s ease; 
 }
 
 #like-btn { 
     color: var(--like-color); 
-    width: 72px; 
-    height: 72px; 
+    width: clamp(55px, 16vw, 65px); 
+    height: clamp(55px, 16vw, 65px); 
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
+    box-shadow: 
+        0 8px 32px rgba(255, 67, 68, 0.15),
+        0 4px 16px rgba(255, 67, 68, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+#like-btn:hover {
+    box-shadow: 
+        0 12px 40px rgba(255, 67, 68, 0.2),
+        0 6px 20px rgba(255, 67, 68, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 #like-btn svg { 
-    transition: transform var(--transition-fast) ease-in-out; 
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
     width: 28px !important;
     height: 28px !important;
     max-width: 28px !important;
     max-height: 28px !important;
     min-width: 28px !important;
     min-height: 28px !important;
+    filter: drop-shadow(0 2px 4px rgba(255, 67, 68, 0.3));
 }
 
 #like-btn:hover svg { 
-    transform: scale(1.15); 
+    transform: scale(1.1) rotate(5deg); 
+    filter: drop-shadow(0 4px 8px rgba(255, 67, 68, 0.4));
 }
 
 #like-btn:active svg { 
-    transform: scale(0.9); 
+    transform: scale(0.95) rotate(0deg); 
+    filter: drop-shadow(0 1px 2px rgba(255, 67, 68, 0.2));
 }
 
 #dislike-btn { 
     color: var(--dislike-color); 
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
+    box-shadow: 
+        0 8px 32px rgba(60, 94, 225, 0.15),
+        0 4px 16px rgba(60, 94, 225, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+#dislike-btn:hover {
+    box-shadow: 
+        0 12px 40px rgba(60, 94, 225, 0.2),
+        0 6px 20px rgba(60, 94, 225, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 /* より強力なセレクタでボタンサイズを制御 */
@@ -805,10 +885,34 @@ main {
     max-height: 28px !important;
     min-width: 28px !important;
     min-height: 28px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 2px 4px rgba(60, 94, 225, 0.3));
+}
+
+#dislike-btn:hover svg {
+    transform: scale(1.1) rotate(-5deg);
+    filter: drop-shadow(0 4px 8px rgba(60, 94, 225, 0.4));
+}
+
+#dislike-btn:active svg {
+    transform: scale(0.95) rotate(0deg);
+    filter: drop-shadow(0 1px 2px rgba(60, 94, 225, 0.2));
 }
 
 #visited-btn { 
     color: var(--visited-color); 
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
+    box-shadow: 
+        0 8px 32px rgba(252, 196, 25, 0.15),
+        0 4px 16px rgba(252, 196, 25, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+#visited-btn:hover {
+    box-shadow: 
+        0 12px 40px rgba(252, 196, 25, 0.2),
+        0 6px 20px rgba(252, 196, 25, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 .swipe-actions #visited-btn svg,
@@ -819,6 +923,63 @@ main {
     max-height: 36px !important;
     min-width: 36px !important;
     min-height: 36px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 2px 4px rgba(252, 196, 25, 0.3));
+}
+
+#visited-btn:hover svg {
+    transform: scale(1.1) rotate(10deg);
+    filter: drop-shadow(0 4px 8px rgba(252, 196, 25, 0.4));
+}
+
+#visited-btn:active svg {
+    transform: scale(0.95) rotate(0deg);
+    filter: drop-shadow(0 1px 2px rgba(252, 196, 25, 0.2));
+}
+
+/* ボタンのパルスアニメーション */
+@keyframes button-pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.12),
+            0 4px 16px rgba(0, 0, 0, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+    50% {
+        transform: scale(1.02);
+        box-shadow: 
+            0 10px 36px rgba(0, 0, 0, 0.15),
+            0 5px 18px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.12),
+            0 4px 16px rgba(0, 0, 0, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+}
+
+.action-btn {
+    animation: button-pulse 3s ease-in-out infinite;
+}
+
+.action-btn:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.action-btn:nth-child(2) {
+    animation-delay: 1s;
+}
+
+.action-btn:nth-child(3) {
+    animation-delay: 2s;
+}
+
+.action-btn:hover {
+    animation: none;
 }
 
 /* Common Components */
@@ -1851,5 +2012,136 @@ input:checked + .slider:before {
     background-clip: text;
     z-index: 101; 
     font-weight: 500;
+}
+
+/* スマートフォン対応のメディアクエリ */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: clamp(28px, 10vw, 40px);
+    }
+    
+    .hero-subtitle {
+        font-size: clamp(12px, 4vw, 16px);
+    }
+    
+    .swipe-title {
+        font-size: clamp(18px, 5vw, 24px);
+    }
+    
+    .swipe-subtitle {
+        font-size: clamp(12px, 3vw, 14px);
+    }
+    
+    .check-in-title {
+        font-size: clamp(20px, 6vw, 28px);
+    }
+    
+    .check-in-subtitle {
+        font-size: clamp(14px, 4vw, 16px);
+    }
+    
+    .decision-title {
+        font-size: clamp(20px, 6vw, 28px);
+    }
+    
+    .decision-subtitle {
+        font-size: clamp(14px, 4vw, 16px);
+    }
+    
+    .end-swipe-title {
+        font-size: clamp(20px, 6vw, 28px);
+    }
+    
+    .end-swipe-subtitle {
+        font-size: clamp(14px, 4vw, 16px);
+    }
+    
+    .main-label {
+        font-size: clamp(20px, 6vw, 28px);
+    }
+    
+    .sub-label {
+        font-size: clamp(14px, 4vw, 16px);
+    }
+    
+    .card {
+        width: 90vw;
+        height: 70vh;
+    }
+    
+    .action-btn {
+        width: clamp(45px, 12vw, 55px);
+        height: clamp(45px, 12vw, 55px);
+    }
+    
+    .swipe-actions {
+        gap: 12px;
+        bottom: calc(80px + env(safe-area-inset-bottom));
+    }
+    
+    .footer-nav {
+        padding: 8px 16px;
+        padding-bottom: calc(8px + env(safe-area-inset-bottom));
+    }
+    
+    .nav-btn {
+        min-width: 50px;
+        padding: 6px 2px;
+    }
+    
+    .nav-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .nav-label {
+        font-size: 10px;
+    }
+    
+    /* タッチデバイスでの最適化 */
+    .animated-search-input {
+        -webkit-appearance: none;
+        appearance: none;
+        font-size: 16px; /* iOSでのズーム防止 */
+    }
+    
+    .action-btn {
+        touch-action: manipulation;
+    }
+    
+    .card {
+        touch-action: pan-x pan-y;
+    }
+}
+
+/* 超小型デバイス対応 */
+@media (max-width: 375px) {
+    .hero-title {
+        font-size: 24px;
+    }
+    
+    .hero-subtitle {
+        font-size: 14px;
+    }
+    
+    .card {
+        width: 95vw;
+        height: 75vh;
+    }
+    
+    .action-btn {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .swipe-actions {
+        gap: 8px;
+        bottom: calc(70px + env(safe-area-inset-bottom));
+    }
+    
+    .footer-nav {
+        padding: 6px 12px;
+        padding-bottom: calc(6px + env(safe-area-inset-bottom));
+    }
 }
 
