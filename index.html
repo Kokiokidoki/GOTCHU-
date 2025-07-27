@@ -19,32 +19,68 @@
 
     <!-- Planning Start Screen -->
     <div id="planning-screen" class="screen is-active">
+        <div class="animated-gradient-bg"></div>
         <main>
             <div class="container-vertical">
-                <label for="anchor-point" class="main-label">どこから探しますか？</label>
-                <p class="sub-label">場所を入力して探索を始めよう</p>
-                <input type="text" id="anchor-point" class="main-input" placeholder="例：雷門">
-                <button id="start-plan-btn" class="main-button">探索スタート</button>
+                <div class="hero-section">
+                    <h1 class="hero-title">GOTCHU!</h1>
+                    <p class="hero-subtitle">あなたの旅を、もっと特別に</p>
+                </div>
+                <div class="search-section">
+                    <label for="anchor-point" class="search-label">どこから探しますか？</label>
+                    <div class="search-container">
+                        <div class="search-input-wrapper">
+                            <input type="text" id="anchor-point" class="animated-search-input" placeholder="例：雷門">
+                            <div class="search-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <path d="m21 21-4.35-4.35"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="start-plan-btn" class="animated-start-button">
+                        <span class="button-text">探索スタート</span>
+                        <div class="button-glow"></div>
+                    </button>
+                </div>
             </div>
         </main>
     </div>
 
     <!-- Check-in Screen -->
     <div id="check-in-screen" class="screen">
+        <div class="animated-gradient-bg"></div>
         <main>
             <div class="container-vertical">
-                <div id="check-in-spot-image" class="check-in-image"></div>
-                <h1 class="main-label" id="check-in-spot-name">雷門</h1>
-                <p class="sub-label">に到着しましたか？</p>
-                <button id="check-in-btn" class="main-button">到着！次の行き先を探す</button>
-                <button id="back-to-decision-btn" class="main-button secondary-button" style="margin-top: 16px;">戻る</button>
+                <div class="check-in-content">
+                    <div id="check-in-spot-image" class="check-in-image"></div>
+                    <div class="check-in-info">
+                        <h1 class="check-in-title" id="check-in-spot-name">雷門</h1>
+                        <p class="check-in-subtitle">に到着しましたか？</p>
+                    </div>
+                    <div class="check-in-actions">
+                        <button id="check-in-btn" class="animated-start-button">
+                            <span class="button-text">到着！次の行き先を探す</span>
+                            <div class="button-glow"></div>
+                        </button>
+                        <button id="back-to-decision-btn" class="secondary-button-modern">
+                            <span>戻る</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
 
     <!-- Swipe Screen -->
     <div id="swipe-screen" class="screen">
+        <div class="animated-gradient-bg"></div>
         <main>
+            <div class="swipe-header">
+                <h2 class="swipe-title">スポットを発見中</h2>
+                <p class="swipe-subtitle">気になる場所をスワイプして選ぼう</p>
+            </div>
             <div class="card-area"></div>
             <div id="swipe-label-like" class="action-label">LIKE</div>
             <div id="swipe-label-dislike" class="action-label">NOPE</div>
@@ -54,16 +90,20 @@
 
     <!-- Decision Screen -->
     <div id="decision-screen" class="screen">
+        <div class="animated-gradient-bg"></div>
         <main>
             <div class="decision-container">
-                <h1 class="main-label">次はどこへ行く？</h1>
-                <p class="sub-label">「行きたい」リストから選んでください</p>
+                <div class="decision-header">
+                    <h1 class="decision-title">次はどこへ行く？</h1>
+                    <p class="decision-subtitle">「行きたい」リストから選んでください</p>
+                </div>
                 <div id="decision-list" class="decision-list"></div>
-                <button id="summarize-from-decision-btn" class="main-button" style="margin-top: 20px;">
+                <button id="summarize-from-decision-btn" class="animated-start-button">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
                     </svg>
-                    <span>旅を終了</span>
+                    <span class="button-text">旅を終了</span>
+                    <div class="button-glow"></div>
                 </button>
             </div>
         </main>
@@ -71,17 +111,29 @@
 
     <!-- End of Swipe Screen -->
     <div id="end-of-swipe-screen" class="screen">
+        <div class="animated-gradient-bg"></div>
         <main>
             <div class="container-vertical">
-                <div class="icon-display">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M14.4,6L14,4H5V21H7V14H12.6L13,16H20V6H14.4Z" />
-                    </svg>
+                <div class="end-swipe-content">
+                    <div class="icon-display-modern">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M14.4,6L14,4H5V21H7V14H12.6L13,16H20V6H14.4Z" />
+                        </svg>
+                    </div>
+                    <div class="end-swipe-info">
+                        <h1 class="end-swipe-title">次の目的地候補は以上です</h1>
+                        <p class="end-swipe-subtitle">プランを終了してまとめますか？</p>
+                    </div>
+                    <div class="end-swipe-actions">
+                        <button id="finish-plan-btn" class="animated-start-button">
+                            <span class="button-text">プランを終了してまとめる</span>
+                            <div class="button-glow"></div>
+                        </button>
+                        <button id="back-to-previous-btn" class="secondary-button-modern">
+                            <span>前の場所の探索に戻る</span>
+                        </button>
+                    </div>
                 </div>
-                <h1 class="main-label">次の目的地候補は以上です</h1>
-                <p class="sub-label">プランを終了してまとめますか？</p>
-                <button id="finish-plan-btn" class="main-button">プランを終了してまとめる</button>
-                <button id="back-to-previous-btn" class="main-button secondary-button" style="margin-top: 16px;">前の場所の探索に戻る</button>
             </div>
         </main>
     </div>
@@ -90,7 +142,15 @@
     <div id="plan-summary-screen" class="screen">
         <main>
             <div class="summary-container">
-                <h1 class="main-label">プランが完成しました！🎉</h1>
+                <h1 class="main-label">
+                    プランが完成しました！
+                    <svg class="celebration-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
+                        <path d="M19 15L19.5 16.5L21 17L19.5 17.5L19 19L18.5 17.5L17 17L18.5 16.5L19 15Z"/>
+                        <path d="M5 15L5.5 16.5L7 17L5.5 17.5L5 19L4.5 17.5L3 17L4.5 16.5L5 15Z"/>
+                    </svg>
+                </h1>
+                <div class="confetti-container"></div>
                 <p class="sub-label">タイトルを付けて保存しよう</p>
                 <input type="text" id="summary-title-input" class="summary-title-input" placeholder="例：浅草食べ歩き最強プラン">
                 <div id="summary-timeline" class="summary-timeline"></div>
@@ -176,14 +236,14 @@
                 <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
             </svg>
         </button>
-        <button class="action-btn" id="like-btn">
+        <button class="action-btn" id="visited-btn">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="36px" height="36px">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
             </svg>
         </button>
-        <button class="action-btn" id="visited-btn">
+        <button class="action-btn" id="like-btn">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="28px" height="28px">
-                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
             </svg>
         </button>
     </div>

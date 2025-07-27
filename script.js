@@ -13,11 +13,13 @@ const spotData = [
     { id: 8, name: 'Tokyo Innovation Base', category: 'イノベーション拠点', image: 'https://workmill.jp/jp/wp-content/uploads/sites/2/2024/07/L1140562-1024x683.jpg', distance: '電車で 25分', tags: ['#スタートアップ', '#イベント', '#丸の内'], ugc: '新しいアイデアが生まれる場所。イベントも面白い。', congestion: 'free', mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3241.0568212847743!2d139.76020148499933!3d35.675602859621!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188b0010c11939%3A0xe6744989593aab42!2sTokyo%20Innovation%20Base!5e0!3m2!1sja!2sjp!4v1753552426445!5m2!1sja!2sjp' },
 ];
 
-// Discovery data (copy with different IDs)
-const discoverySpotData = spotData.map((spot, index) => ({
-    ...spot,
-    id: 100 + index + 1
-}));
+// Discovery data (copy with different IDs, excluding current location)
+const discoverySpotData = spotData
+    .filter(spot => spot.distance !== '現在地')
+    .map((spot, index) => ({
+        ...spot,
+        id: 100 + index + 1
+    }));
 
 // Constants
 const CONGESTION_LABELS = {
@@ -50,6 +52,9 @@ class CardSwiper {
         this.isDragging = false;
         this.startPos = { x: 0, y: 0 };
         this.currentPos = { x: 0, y: 0 };
+        this.dragThreshold = 10; // ドラッグ開始の閾値
+        this.swipeThreshold = 60; // スワイプ判定の閾値
+        this.isDragStarted = false; // ドラッグが実際に開始されたかどうか
 
         this.bindMethods();
         this.init();
@@ -134,6 +139,9 @@ class CardSwiper {
         if (this.cardStack.length > 0) {
             this.activeCard = this.cardStack[this.cardStack.length - 1];
             
+            // カーソルスタイルを設定
+            this.activeCard.style.cursor = 'grab';
+            
             // Smooth entrance animation
             this.activeCard.style.opacity = '1';
             this.activeCard.style.transform = 'translateY(0) scale(1)';
@@ -148,20 +156,31 @@ class CardSwiper {
                 }, 150);
             }, 50);
             
-            // Add event listeners
+            // Add event listeners with improved touch handling
             this.activeCard.addEventListener('mousedown', this.onDragStart);
             this.activeCard.addEventListener('touchstart', this.onDragStart, { passive: false });
+            
+            // タッチデバイスでの長押し防止
+            this.activeCard.addEventListener('contextmenu', (e) => e.preventDefault());
         }
     }
 
     onDragStart(e) {
         e.preventDefault();
+        e.stopPropagation();
+        
         this.isDragging = true;
+        this.isDragStarted = false;
         this.startPos = {
             x: e.type === 'mousedown' ? e.clientX : e.touches[0].clientX,
             y: e.type === 'mousedown' ? e.clientY : e.touches[0].clientY
         };
         this.currentPos = { ...this.startPos };
+        
+        // カードにカーソルスタイルを設定
+        if (this.activeCard) {
+            this.activeCard.style.cursor = 'grabbing';
+        }
         
         document.addEventListener('mousemove', this.onDragMove);
         document.addEventListener('touchmove', this.onDragMove, { passive: false });
@@ -172,6 +191,7 @@ class CardSwiper {
     onDragMove(e) {
         if (!this.isDragging) return;
         e.preventDefault();
+        e.stopPropagation();
         
         this.currentPos = {
             x: e.type === 'mousemove' ? e.clientX : e.touches[0].clientX,
@@ -180,13 +200,19 @@ class CardSwiper {
         
         const deltaX = this.currentPos.x - this.startPos.x;
         const deltaY = this.currentPos.y - this.startPos.y;
+        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
         
-        // Add swiping class for smooth animation
-        this.activeCard.classList.add('swiping');
+        // ドラッグ開始の閾値を超えたら実際のドラッグを開始
+        if (!this.isDragStarted && distance > this.dragThreshold) {
+            this.isDragStarted = true;
+            this.activeCard.classList.add('swiping');
+        }
+        
+        if (!this.isDragStarted) return;
         
         // Apply transform with improved rotation calculation
-        const rotation = deltaX * 0.15; // Slightly more rotation for better feel
-        const scale = 1 - Math.abs(deltaX) * 0.0005; // Subtle scale effect
+        const rotation = deltaX * 0.12; // より自然な回転
+        const scale = Math.max(0.95, 1 - Math.abs(deltaX) * 0.0003); // より控えめなスケール効果
         
         this.activeCard.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${rotation}deg) scale(${scale})`;
         
@@ -197,23 +223,23 @@ class CardSwiper {
         const deltaX = this.currentPos.x - this.startPos.x;
         const deltaY = this.currentPos.y - this.startPos.y;
         
-        // Improved indicator logic with smoother transitions
-        if (Math.abs(deltaX) > 30) {
+        // より敏感なインジケーター表示
+        if (Math.abs(deltaX) > 20) {
             const direction = deltaX > 0 ? 'like' : 'dislike';
-            const opacity = Math.min(Math.abs(deltaX) / 80, 1);
+            const opacity = Math.min(Math.abs(deltaX) / 60, 1);
             
             this.labels[direction].style.opacity = opacity;
-            this.labels[direction].classList.toggle('visible', opacity > 0.5);
+            this.labels[direction].classList.toggle('visible', opacity > 0.3);
             
             this.labels[direction === 'like' ? 'dislike' : 'like'].style.opacity = 0;
             this.labels[direction === 'like' ? 'dislike' : 'like'].classList.remove('visible');
             this.labels.visited.style.opacity = 0;
             this.labels.visited.classList.remove('visible');
-        } else if (deltaY < -30) {
-            const opacity = Math.min(Math.abs(deltaY) / 80, 1);
+        } else if (deltaY < -20) {
+            const opacity = Math.min(Math.abs(deltaY) / 60, 1);
             
             this.labels.visited.style.opacity = opacity;
-            this.labels.visited.classList.toggle('visible', opacity > 0.5);
+            this.labels.visited.classList.toggle('visible', opacity > 0.3);
             
             this.labels.like.style.opacity = 0;
             this.labels.like.classList.remove('visible');
@@ -233,23 +259,34 @@ class CardSwiper {
         if (!this.isDragging) return;
         this.isDragging = false;
         
+        // カーソルスタイルをリセット
+        if (this.activeCard) {
+            this.activeCard.style.cursor = 'grab';
+        }
+        
         // Remove swiping class
         this.activeCard.classList.remove('swiping');
         
         // Reset indicators
         Object.values(this.labels).forEach(label => {
-            if (label) label.style.opacity = 0;
+            if (label) {
+                label.style.opacity = 0;
+                label.classList.remove('visible');
+            }
         });
         
         const deltaX = this.currentPos.x - this.startPos.x;
         const deltaY = this.currentPos.y - this.startPos.y;
+        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
         
-        // Determine swipe direction with improved thresholds
+        // より敏感なスワイプ判定
         let direction = null;
-        if (Math.abs(deltaX) > 80) { // Reduced threshold for better responsiveness
-            direction = deltaX > 0 ? 'right' : 'left';
-        } else if (deltaY < -80) {
-            direction = 'up';
+        if (this.isDragStarted && distance > this.swipeThreshold) {
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                direction = deltaX > 0 ? 'right' : 'left';
+            } else if (deltaY < 0) {
+                direction = 'up';
+            }
         }
         
         if (direction) {
@@ -386,6 +423,11 @@ class AppManager {
         this.initStarRating();
         this.initSavePlanButton();
         this.initMyPlansEditMode();
+        
+        // ページ読み込み後にボタンサイズを確実に設定
+        setTimeout(() => {
+            this.setButtonSizes();
+        }, 100);
     }
 
     initNavigation() {
@@ -428,6 +470,9 @@ class AppManager {
         const likeBtn = document.getElementById('like-btn');
         const visitedBtn = document.getElementById('visited-btn');
 
+        // ボタンサイズを強制的に設定
+        this.setButtonSizes();
+
         dislikeBtn?.addEventListener('click', () => this.handleGlobalActionButtonClick('left'));
         likeBtn?.addEventListener('click', () => this.handleGlobalActionButtonClick('right'));
         visitedBtn?.addEventListener('click', () => this.handleGlobalActionButtonClick('up'));
@@ -442,6 +487,41 @@ class AppManager {
             this.discoverySwiper.triggerSwipe(direction);
         } else if (screenId === 'swipe-screen') {
             this.swiper.triggerSwipe(direction);
+        }
+    }
+
+    setButtonSizes() {
+        const dislikeBtn = document.getElementById('dislike-btn');
+        const likeBtn = document.getElementById('like-btn');
+        const visitedBtn = document.getElementById('visited-btn');
+
+        // ボタンサイズを強制的に設定
+        if (dislikeBtn && dislikeBtn.querySelector('svg')) {
+            const svg = dislikeBtn.querySelector('svg');
+            svg.style.width = '28px';
+            svg.style.height = '28px';
+            svg.style.maxWidth = '28px';
+            svg.style.maxHeight = '28px';
+            svg.style.minWidth = '28px';
+            svg.style.minHeight = '28px';
+        }
+        if (likeBtn && likeBtn.querySelector('svg')) {
+            const svg = likeBtn.querySelector('svg');
+            svg.style.width = '28px';
+            svg.style.height = '28px';
+            svg.style.maxWidth = '28px';
+            svg.style.maxHeight = '28px';
+            svg.style.minWidth = '28px';
+            svg.style.minHeight = '28px';
+        }
+        if (visitedBtn && visitedBtn.querySelector('svg')) {
+            const svg = visitedBtn.querySelector('svg');
+            svg.style.width = '36px';
+            svg.style.height = '36px';
+            svg.style.maxWidth = '36px';
+            svg.style.maxHeight = '36px';
+            svg.style.minWidth = '36px';
+            svg.style.minHeight = '36px';
         }
     }
 
@@ -484,7 +564,11 @@ class AppManager {
         document.getElementById('check-in-btn').addEventListener('click', () => {
             if (this.isTransitioning) return;
             const visitedSpotIds = new Set(this.currentPlan.visitedSpots.map(spot => spot.id).filter(id => id !== undefined && id !== null));
-            const availableSpots = spotData.filter(spot => !visitedSpotIds.has(spot.id));
+            // 雷門（現在地）と訪問済みスポットを除外
+            const availableSpots = spotData.filter(spot => 
+                !visitedSpotIds.has(spot.id) && 
+                spot.distance !== '現在地'
+            );
             
             if (availableSpots.length === 0) {
                 this.switchToScreen('end-of-swipe-screen');
@@ -576,10 +660,22 @@ class AppManager {
         this.dom.decisionContainer.innerHTML = '';
         const fragment = document.createDocumentFragment();
         
-        // 重複を除去（IDで判定）
-        const uniqueSpots = likedSpots.filter((spot, index, self) => 
-            index === self.findIndex(s => s.id === spot.id)
-        );
+        // 重複を除去（IDで判定）し、現在地と訪問済みスポットを除外
+        const uniqueSpots = likedSpots.filter((spot, index, self) => {
+            const isUnique = index === self.findIndex(s => s.id === spot.id);
+            const isNotCurrentLocation = spot.distance !== '現在地';
+            const isNotVisited = !this.currentPlan.visitedSpots.some(visitedSpot => visitedSpot.id === spot.id);
+            return isUnique && isNotCurrentLocation && isNotVisited;
+        });
+        
+        // 表示するスポットがない場合の処理
+        if (uniqueSpots.length === 0) {
+            const emptyMessage = document.createElement('div');
+            emptyMessage.className = 'decision-empty-message';
+            emptyMessage.innerHTML = '<p>選択できるスポットがありません</p>';
+            this.dom.decisionContainer.appendChild(emptyMessage);
+            return;
+        }
         
         uniqueSpots.forEach(spot => {
             const itemEl = document.createElement('div');
@@ -602,7 +698,12 @@ class AppManager {
     }
 
     decideNextSpot(spot) {
-        this.currentPlan.visitedSpots.push(spot);
+        // スポットにratingプロパティを確実に初期化
+        const spotWithRating = {
+            ...spot,
+            rating: spot.rating || 0
+        };
+        this.currentPlan.visitedSpots.push(spotWithRating);
         this.dom.checkInSpotName.textContent = spot.name;
         this.dom.checkInSpotImage.style.backgroundImage = `url('${spot.image}')`;
         this.switchToScreen('check-in-screen');
@@ -613,11 +714,34 @@ class AppManager {
         this.currentDisplayPlan = plan; // 現在表示中のプランを保存
         this.dom.summaryTitleInput.value = planObject ? plan.title : '';
         
+        // 新規作成時のみ花びらエフェクトを開始
+        if (!planObject) {
+            this.startPetalsEffect();
+        }
+        
         this.dom.summaryContainer.innerHTML = '';
         const fragment = document.createDocumentFragment();
         
         // 後方互換性のため、spotsとvisitedSpotsの両方をチェック
-        const visitedSpots = plan.visitedSpots || plan.spots || [];
+        let visitedSpots = plan.visitedSpots || plan.spots || [];
+        
+        // 新規作成時は雷門を最初に追加
+        if (!planObject && visitedSpots.length > 0) {
+            const kaminarimonSpot = spotData.find(spot => spot.name === '雷門');
+            if (kaminarimonSpot) {
+                const kaminarimonWithRating = {
+                    ...kaminarimonSpot,
+                    rating: 0
+                };
+                visitedSpots = [kaminarimonWithRating, ...visitedSpots];
+                
+                // 雷門を含む全てのスポットをcurrentDisplayPlanに保存
+                this.currentDisplayPlan = {
+                    ...this.currentDisplayPlan,
+                    visitedSpots: visitedSpots
+                };
+            }
+        }
         
         // visitedSpotsが存在しない場合の処理を追加
         if (visitedSpots.length === 0) {
@@ -632,13 +756,19 @@ class AppManager {
         const isHistoricalPlan = planObject !== null;
         
         visitedSpots.forEach((spot, index) => {
+            // スポットのratingプロパティを確実に初期化
+            const spotWithRating = {
+                ...spot,
+                rating: spot.rating || 0
+            };
+            
             const itemEl = document.createElement('div');
             itemEl.className = 'summary-item';
-            itemEl.dataset.rating = spot.rating || 0;
+            itemEl.dataset.rating = spotWithRating.rating;
             
             const starsHtml = Array.from({length: 5}, (_, i) => {
-                const isFilled = i < (spot.rating || 0) ? 'filled' : '';
-                return `<svg class="${isFilled}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>`;
+                const isFilled = i < spotWithRating.rating ? 'filled' : '';
+                return `<svg class="${isFilled}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>`;
             }).join('');
             
             if (isHistoricalPlan) {
@@ -680,10 +810,15 @@ class AppManager {
                         <img class="summary-item-image" src="${spot.image}" alt="${spot.name}" onerror="this.onerror=null;this.src='https://placehold.co/60x60/e2e8f0/94a3b8?text=Image';">
                         <div class="summary-item-details">
                             <h3 class="summary-item-name">${spot.name}</h3>
-                            <div class="star-rating">${starsHtml}</div>
+                            <div class="star-rating-container" style="display: flex !important; visibility: visible !important; opacity: 1 !important;">
+                                <span class="rating-label" style="visibility: visible !important; opacity: 1 !important;">評価:</span>
+                                <div class="star-rating" style="display: flex !important; visibility: visible !important; opacity: 1 !important;">${starsHtml}</div>
+                            </div>
                         </div>
                     </div>
                 `;
+                
+
             }
             
             const starContainer = itemEl.querySelector('.star-rating');
@@ -694,7 +829,16 @@ class AppManager {
                 
                 const rating = Array.from(stars).indexOf(clickedStar) + 1;
                 this.setRating(starContainer, rating);
-                spot.rating = rating;
+                spotWithRating.rating = rating;
+                
+                // currentDisplayPlanのスポットも更新
+                if (this.currentDisplayPlan && this.currentDisplayPlan.visitedSpots) {
+                    const spotToUpdate = this.currentDisplayPlan.visitedSpots.find(s => s.id === spotWithRating.id);
+                    if (spotToUpdate) {
+                        spotToUpdate.rating = rating;
+                    }
+                }
+                
                 this.updateOverallRating();
             });
             
@@ -723,21 +867,137 @@ class AppManager {
     updateOverallRating() {
         // 現在表示中のプランを取得
         const currentDisplayPlan = this.currentDisplayPlan || this.currentPlan;
-        const ratings = currentDisplayPlan.visitedSpots.map(spot => spot.rating || 0).filter(rating => rating > 0);
-        if (ratings.length === 0) return;
         
-        const averageRating = ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length;
-        this.dom.overallRatingValue.textContent = averageRating.toFixed(1);
+        // 新規作成時は雷門を含む全てのスポットの評価を取得
+        let allSpots = currentDisplayPlan.visitedSpots || [];
+        // 新規作成時（titleがない場合）は雷門を含む全てのスポットを使用
+        if (!currentDisplayPlan.title && allSpots.length > 0) {
+            // currentDisplayPlanに雷門が含まれているかチェック
+            const hasKaminarimon = allSpots.some(spot => spot.name === '雷門');
+            if (!hasKaminarimon) {
+                // 雷門が含まれていない場合は追加
+                const kaminarimonSpot = spotData.find(spot => spot.name === '雷門');
+                if (kaminarimonSpot) {
+                    const kaminarimonWithRating = {
+                        ...kaminarimonSpot,
+                        rating: 0
+                    };
+                    allSpots = [kaminarimonWithRating, ...allSpots];
+                }
+            }
+        }
         
-        // 星の表示を更新
-        const stars = this.dom.overallStarsBackground.querySelectorAll('svg');
-        const filledCount = Math.floor(averageRating);
+        const ratings = allSpots.map(spot => spot.rating || 0);
         
-        stars.forEach((star, index) => {
-            star.classList.toggle('filled', index < filledCount);
-        });
+        // 評価が0より大きいスポットが1つでもあれば総合評価を表示
+        const validRatings = ratings.filter(rating => rating > 0);
+        if (validRatings.length === 0) {
+            // 評価がない場合は0.0を表示
+            this.dom.overallRatingValue.textContent = '0.0';
+            const stars = this.dom.overallStarsBackground.querySelectorAll('svg');
+            stars.forEach((star, index) => {
+                star.classList.toggle('filled', false);
+            });
+        } else {
+            const averageRating = validRatings.reduce((sum, rating) => sum + rating, 0) / validRatings.length;
+            this.dom.overallRatingValue.textContent = averageRating.toFixed(1);
+            
+            // 星の表示を更新
+            const stars = this.dom.overallStarsBackground.querySelectorAll('svg');
+            const filledCount = Math.floor(averageRating);
+            
+            stars.forEach((star, index) => {
+                star.classList.toggle('filled', index < filledCount);
+            });
+        }
         
+        // 必ず総合評価UIを表示
         this.dom.overallRatingContainer.classList.add('visible');
+    }
+
+    startPetalsEffect() {
+        const confettiContainer = document.querySelector('.confetti-container');
+        if (!confettiContainer) return;
+        
+        // 既存の紙吹雪をクリア
+        confettiContainer.innerHTML = '';
+        
+        // 紙吹雪の種類と色の定義
+        const confettiTypes = [
+            { shape: 'square', color: 'red' },
+            { shape: 'circle', color: 'blue' },
+            { shape: 'triangle', color: 'green' },
+            { shape: 'square', color: 'yellow' },
+            { shape: 'circle', color: 'purple' },
+            { shape: 'triangle', color: 'pink' },
+            { shape: 'square', color: 'orange' },
+            { shape: 'circle', color: 'red' },
+            { shape: 'triangle', color: 'blue' },
+            { shape: 'square', color: 'green' }
+        ];
+        
+        // 紙吹雪を生成する関数
+        const createConfetti = () => {
+            const confetti = document.createElement('div');
+            const confettiType = confettiTypes[Math.floor(Math.random() * confettiTypes.length)];
+            
+            confetti.className = `confetti ${confettiType.shape} ${confettiType.color}`;
+            
+            // ランダムな位置とサイズを設定
+            const size = 6 + Math.random() * 6; // 6px - 12px
+            if (confettiType.shape === 'triangle') {
+                confetti.style.borderLeftWidth = size/2 + 'px';
+                confetti.style.borderRightWidth = size/2 + 'px';
+                confetti.style.borderBottomWidth = size + 'px';
+            } else {
+                confetti.style.width = size + 'px';
+                confetti.style.height = size + 'px';
+            }
+            
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.animationDelay = Math.random() * 0.5 + 's';
+            confetti.style.animationDuration = (2 + Math.random() * 2) + 's';
+            
+            // ランダムにスピンアニメーションを追加
+            if (Math.random() > 0.6) {
+                confetti.classList.add('confetti-spin');
+            }
+            
+            confettiContainer.appendChild(confetti);
+            
+            // アニメーション終了後に紙吹雪を削除
+            setTimeout(() => {
+                if (confetti.parentNode) {
+                    confetti.parentNode.removeChild(confetti);
+                }
+            }, 5000);
+        };
+        
+        // 最初の紙吹雪を段階的に生成
+        for (let i = 0; i < 20; i++) {
+            setTimeout(() => createConfetti(), i * 100);
+        }
+        
+        // 継続的に紙吹雪を生成
+        const confettiInterval = setInterval(() => {
+            createConfetti();
+        }, 200);
+        
+        // 8秒後に紙吹雪生成を停止
+        setTimeout(() => {
+            clearInterval(confettiInterval);
+        }, 8000);
+        
+        // 追加の紙吹雪をランダムなタイミングで生成
+        const randomConfetti = setInterval(() => {
+            if (Math.random() > 0.8) {
+                createConfetti();
+            }
+        }, 500);
+        
+        setTimeout(() => {
+            clearInterval(randomConfetti);
+        }, 8000);
     }
 
     initSavePlanButton() {
@@ -963,6 +1223,10 @@ class AppManager {
                 if (screenId === 'discovery-screen') {
                     this.discoverySwiper.start(discoverySpotData);
                 }
+                // スワイプ関連画面に切り替わった時にボタンサイズを再設定
+                setTimeout(() => {
+                    this.setButtonSizes();
+                }, 100);
             } else {
                 this.dom.swipeActions.style.opacity = '0';
                 this.dom.swipeActions.style.pointerEvents = 'none';
