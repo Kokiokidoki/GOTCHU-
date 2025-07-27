@@ -131,43 +131,36 @@ class CardSwiper {
     }
 
     loadNextCard() {
-        if (this.activeCard) {
-            this.activeCard.removeEventListener('mousedown', this.onDragStart);
-            this.activeCard.removeEventListener('touchstart', this.onDragStart);
-        }
+        if (this.cardStack.length === 0) return;
         
-        if (this.cardStack.length > 0) {
-            this.activeCard = this.cardStack[this.cardStack.length - 1];
-            
-            // カーソルスタイルを設定
-            this.activeCard.style.cursor = 'grab';
-            
-            // Smooth entrance animation
-            this.activeCard.style.opacity = '1';
-            this.activeCard.style.transform = 'translateY(0) scale(1)';
-            this.activeCard.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.4s ease-out';
-            
-            // Add spring effect for more natural feel
-            setTimeout(() => {
-                this.activeCard.style.transform = 'translateY(-5px) scale(1.02)';
-                setTimeout(() => {
-                    this.activeCard.style.transform = 'translateY(0) scale(1)';
-                    this.activeCard.style.transition = '';
-                }, 150);
-            }, 50);
-            
-            // Add event listeners with improved touch handling
-            this.activeCard.addEventListener('mousedown', this.onDragStart);
-            this.activeCard.addEventListener('touchstart', this.onDragStart, { passive: false });
-            
-            // タッチデバイスでの長押し防止
-            this.activeCard.addEventListener('contextmenu', (e) => e.preventDefault());
-        }
+        this.activeCard = this.cardStack[this.cardStack.length - 1];
+        this.activeCard.style.cursor = 'grab';
+        
+        // スマホでのタッチイベント最適化
+        this.activeCard.addEventListener('contextmenu', (e) => e.preventDefault());
+        
+        // タッチイベントとマウスイベントの両方に対応
+        this.activeCard.addEventListener('mousedown', this.onDragStart);
+        this.activeCard.addEventListener('touchstart', this.onDragStart, { passive: false });
+        
+        // スマホでのダブルタップズーム防止
+        this.activeCard.addEventListener('touchend', (e) => {
+            e.preventDefault();
+        }, { passive: false });
+        
+        // カードの初期状態をリセット
+        this.activeCard.style.transform = 'translate(0, 0) rotate(0deg) scale(1)';
+        this.activeCard.style.opacity = '1';
+        this.activeCard.classList.remove('swiping');
+        
+        console.log('Card loaded:', this.activeCard.querySelector('.card-title')?.textContent);
     }
 
     onDragStart(e) {
         e.preventDefault();
         e.stopPropagation();
+        
+        console.log('Drag start:', e.type, 'on mobile:', this.isMobile);
         
         this.isDragging = true;
         this.isDragStarted = false;
@@ -181,6 +174,8 @@ class CardSwiper {
             y: touch.clientY
         };
         this.currentPos = { ...this.startPos };
+        
+        console.log('Start position:', this.startPos);
         
         // カードにカーソルスタイルを設定
         if (this.activeCard) {
@@ -219,6 +214,7 @@ class CardSwiper {
         if (!this.isDragStarted && distance > this.dragThreshold) {
             this.isDragStarted = true;
             this.activeCard.classList.add('swiping');
+            console.log('Drag started, distance:', distance);
         }
         
         if (!this.isDragStarted) return;
@@ -1433,6 +1429,22 @@ class AppManager {
 document.addEventListener('DOMContentLoaded', () => {
     try {
         console.log('GOTCHU! App initializing...');
+        console.log('Platform:', navigator.platform);
+        console.log('User Agent:', navigator.userAgent);
+        console.log('Touch Support:', 'ontouchstart' in window);
+        console.log('Max Touch Points:', navigator.maxTouchPoints);
+        
+        // スマホ特有の設定
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            console.log('Mobile device detected');
+            // スマホでのタッチイベント最適化
+            document.addEventListener('touchstart', function(e) {
+                if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+        }
+        
         new AppManager();
         console.log('GOTCHU! App initialized successfully');
     } catch (error) {
