@@ -1,4 +1,5 @@
 /* style.css - Optimized */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
     --bg-color: #FDFDFD;
@@ -49,15 +50,29 @@ body.theme-planning {
     overflow: hidden;
 }
 
-/* オープニング画面のスタイル */
+/* オープニング画面の先進的なスタイル */
 .animated-gradient-bg {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: #ffd93d;
+    background: linear-gradient(-45deg, #ffd93d, #ffed4e, #ffc107, #ffb347, #ffd93d);
+    background-size: 400% 400%;
+    animation: gradient-shift 8s ease-in-out infinite;
     z-index: -1;
+}
+
+@keyframes gradient-shift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 .hero-section {
@@ -189,6 +204,7 @@ body.theme-planning {
 .animated-start-button {
     position: relative;
     width: 100%;
+    max-width: 280px;
     padding: 18px 32px;
     background: linear-gradient(135deg, #007AFF, #0056b3);
     border: none;
@@ -200,6 +216,7 @@ body.theme-planning {
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 8px 24px rgba(0, 122, 255, 0.3);
+    text-align: center;
 }
 
 .animated-start-button:hover {
@@ -326,6 +343,9 @@ body.theme-planning {
     backdrop-filter: blur(10px);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 280px;
+    text-align: center;
 }
 
 .secondary-button-modern:hover {
@@ -1831,231 +1851,5 @@ input:checked + .slider:before {
     background-clip: text;
     z-index: 101; 
     font-weight: 500;
-}
-
-/* レスポンシブ対応とデバイス別最適化 */
-@media (max-width: 768px) {
-    /* スマホ向け最適化 */
-    .card {
-        width: 90vw;
-        max-width: 350px;
-        height: 70vh;
-    }
-    
-    .swipe-title {
-        font-size: 22px;
-    }
-    
-    .swipe-subtitle {
-        font-size: 13px;
-    }
-    
-    .hero-title {
-        font-size: 40px;
-    }
-    
-    .hero-subtitle {
-        font-size: 16px;
-    }
-    
-    .action-btn {
-        width: 60px;
-        height: 60px;
-    }
-    
-    .nav-btn {
-        min-width: 50px;
-    }
-    
-    .nav-label {
-        font-size: 10px;
-    }
-}
-
-@media (min-width: 769px) {
-    /* パソコン向け最適化 */
-    .card {
-        width: 400px;
-        max-width: 400px;
-        height: 600px;
-    }
-    
-    .swipe-title {
-        font-size: 26px;
-    }
-    
-    .swipe-subtitle {
-        font-size: 15px;
-    }
-    
-    .hero-title {
-        font-size: 52px;
-    }
-    
-    .hero-subtitle {
-        font-size: 18px;
-    }
-    
-    .action-btn {
-        width: 70px;
-        height: 70px;
-    }
-    
-    .nav-btn {
-        min-width: 70px;
-    }
-    
-    .nav-label {
-        font-size: 12px;
-    }
-}
-
-/* タッチデバイス向け最適化 */
-@media (hover: none) and (pointer: coarse) {
-    .card {
-        touch-action: pan-x pan-y;
-    }
-    
-    .action-btn {
-        min-height: 44px; /* iOS推奨最小タッチサイズ */
-    }
-    
-    .nav-btn {
-        min-height: 44px;
-    }
-    
-    .main-button,
-    .animated-start-button {
-        min-height: 44px;
-    }
-}
-
-/* マウスデバイス向け最適化 */
-@media (hover: hover) and (pointer: fine) {
-    .card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2);
-    }
-    
-    .action-btn:hover {
-        transform: scale(1.05);
-    }
-    
-    .nav-btn:hover {
-        transform: translateY(-1px);
-    }
-}
-
-/* 高解像度ディスプレイ向け最適化 */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-    .card-image {
-        image-rendering: -webkit-optimize-contrast;
-        image-rendering: crisp-edges;
-    }
-}
-
-/* ダークモード対応 */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --bg-color: #1a1a1a;
-        --text-color: #ffffff;
-        --card-bg-color: #2d2d2d;
-        --subtle-gray: #3a3a3a;
-    }
-    
-    .card {
-        background: rgba(45, 45, 45, 0.95);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .animated-gradient-bg {
-        background: #ffd93d;
-    }
-}
-
-/* アクセシビリティ対応 */
-@media (prefers-reduced-motion: reduce) {
-    * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-    
-    .animated-gradient-bg {
-        animation: none;
-    }
-    
-    .hero-section {
-        animation: none;
-    }
-    
-    .search-section {
-        animation: none;
-    }
-}
-
-/* スマホ向けタッチ最適化 */
-.card {
-    touch-action: pan-x pan-y;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    -webkit-touch-callout: none;
-    -webkit-tap-highlight-color: transparent;
-}
-
-.card-area {
-    touch-action: pan-x pan-y;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-.action-btn {
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-.nav-btn {
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-.main-button,
-.animated-start-button {
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-/* スマホでのダブルタップズーム防止 */
-* {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-/* 入力フィールドは選択可能にする */
-input, textarea {
-    -webkit-user-select: text;
-    -moz-user-select: text;
-    -ms-user-select: text;
-    user-select: text;
 }
 
