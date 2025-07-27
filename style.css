@@ -49,29 +49,15 @@ body.theme-planning {
     overflow: hidden;
 }
 
-/* オープニング画面の先進的なスタイル */
+/* オープニング画面のスタイル */
 .animated-gradient-bg {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(-45deg, #ffd93d, #ffed4e, #ffc107, #ffb347, #ffd93d);
-    background-size: 400% 400%;
-    animation: gradient-shift 8s ease-in-out infinite;
+    background: #ffd93d;
     z-index: -1;
-}
-
-@keyframes gradient-shift {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
 }
 
 .hero-section {
@@ -1983,7 +1969,7 @@ input:checked + .slider:before {
     }
     
     .animated-gradient-bg {
-        background: linear-gradient(-45deg, #2d2d2d, #3a3a3a, #1a1a1a, #2d2d2d);
+        background: #ffd93d;
     }
 }
 
