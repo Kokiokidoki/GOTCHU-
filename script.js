@@ -40,22 +40,37 @@ class CardSwiper {
         this.likeBtn = document.getElementById(options.likeButtonId);
         this.visitedBtn = document.getElementById(options.visitedButtonId);
         
-        // Optimized label selection
-        const isDiscovery = options.cardAreaSelector.includes('discovery');
-        this.labels = {
-            like: document.getElementById(isDiscovery ? 'discovery-label-like' : 'swipe-label-like'),
-            dislike: document.getElementById(isDiscovery ? 'discovery-label-dislike' : 'swipe-label-dislike'),
-            visited: document.getElementById(isDiscovery ? 'discovery-label-visited' : 'swipe-label-visited')
-        };
-
+        // デバッグ情報
+        console.log('CardSwiper constructor:', {
+            cardArea: this.cardArea,
+            dislikeBtn: this.dislikeBtn,
+            likeBtn: this.likeBtn,
+            visitedBtn: this.visitedBtn,
+            isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+        });
+        
+        this.cardStack = [];
         this.activeCard = null;
         this.isDragging = false;
+        this.isDragStarted = false;
         this.startPos = { x: 0, y: 0 };
         this.currentPos = { x: 0, y: 0 };
-        this.dragThreshold = 10; // ドラッグ開始の閾値
-        this.swipeThreshold = 60; // スワイプ判定の閾値
-        this.isDragStarted = false; // ドラッグが実際に開始されたかどうか
-
+        this.dragThreshold = 10;
+        this.swipeThreshold = 60;
+        
+        // スマホでの閾値調整
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            this.dragThreshold = 5;  // スマホではより敏感に
+            this.swipeThreshold = 40; // スマホではより短い距離でスワイプ
+            console.log('Mobile thresholds applied:', {
+                dragThreshold: this.dragThreshold,
+                swipeThreshold: this.swipeThreshold
+            });
+        }
+        
+        this.results = { liked: [], disliked: [], visited: [] };
+        this.labels = {};
+        
         this.bindMethods();
         this.init();
     }
@@ -64,13 +79,33 @@ class CardSwiper {
         this.onDragStart = this.onDragStart.bind(this);
         this.onDragMove = this.onDragMove.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
+        this.onTouchEnd = this.onTouchEnd.bind(this);
     }
 
     init() {
-        // Event delegation for better performance
-        if (this.dislikeBtn) this.dislikeBtn.addEventListener('click', () => this.triggerSwipe('left'));
-        if (this.likeBtn) this.likeBtn.addEventListener('click', () => this.triggerSwipe('right'));
-        if (this.visitedBtn) this.visitedBtn.addEventListener('click', () => this.triggerSwipe('up'));
+        // Optimized label selection
+        const isDiscovery = this.options.cardAreaSelector.includes('discovery');
+        this.labels = {
+            like: document.getElementById(isDiscovery ? 'discovery-label-like' : 'swipe-label-like'),
+            dislike: document.getElementById(isDiscovery ? 'discovery-label-dislike' : 'swipe-label-dislike'),
+            visited: document.getElementById(isDiscovery ? 'discovery-label-visited' : 'swipe-label-visited')
+        };
+        
+        console.log('Labels initialized:', this.labels);
+        
+        // ボタンイベントリスナー
+        if (this.dislikeBtn) {
+            this.dislikeBtn.addEventListener('click', () => this.triggerSwipe('left'));
+            console.log('Dislike button listener added');
+        }
+        if (this.likeBtn) {
+            this.likeBtn.addEventListener('click', () => this.triggerSwipe('right'));
+            console.log('Like button listener added');
+        }
+        if (this.visitedBtn) {
+            this.visitedBtn.addEventListener('click', () => this.triggerSwipe('up'));
+            console.log('Visited button listener added');
+        }
     }
     
     reset() {
@@ -133,6 +168,13 @@ class CardSwiper {
     loadNextCard() {
         if (this.cardStack.length === 0) return;
         
+        // 前のカードのイベントリスナーを削除
+        if (this.activeCard) {
+            this.activeCard.removeEventListener('mousedown', this.onDragStart);
+            this.activeCard.removeEventListener('touchstart', this.onDragStart);
+            this.activeCard.removeEventListener('touchend', this.onTouchEnd);
+        }
+        
         this.activeCard = this.cardStack[this.cardStack.length - 1];
         this.activeCard.style.cursor = 'grab';
         
@@ -144,9 +186,7 @@ class CardSwiper {
         this.activeCard.addEventListener('touchstart', this.onDragStart, { passive: false });
         
         // スマホでのダブルタップズーム防止
-        this.activeCard.addEventListener('touchend', (e) => {
-            e.preventDefault();
-        }, { passive: false });
+        this.activeCard.addEventListener('touchend', this.onTouchEnd, { passive: false });
         
         // カードの初期状態をリセット
         this.activeCard.style.transform = 'translate(0, 0) rotate(0deg) scale(1)';
@@ -160,7 +200,7 @@ class CardSwiper {
         e.preventDefault();
         e.stopPropagation();
         
-        console.log('Drag start:', e.type, 'on mobile:', this.isMobile);
+        console.log('Drag start:', e.type, 'on mobile:', /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
         
         this.isDragging = true;
         this.isDragStarted = false;
@@ -186,9 +226,11 @@ class CardSwiper {
         if (isTouch) {
             document.addEventListener('touchmove', this.onDragMove, { passive: false });
             document.addEventListener('touchend', this.onDragEnd);
+            console.log('Touch event listeners added');
         } else {
             document.addEventListener('mousemove', this.onDragMove);
             document.addEventListener('mouseup', this.onDragEnd);
+            console.log('Mouse event listeners added');
         }
     }
 
@@ -214,7 +256,7 @@ class CardSwiper {
         if (!this.isDragStarted && distance > this.dragThreshold) {
             this.isDragStarted = true;
             this.activeCard.classList.add('swiping');
-            console.log('Drag started, distance:', distance);
+            console.log('Drag started, distance:', distance, 'threshold:', this.dragThreshold);
         }
         
         if (!this.isDragStarted) return;
@@ -268,6 +310,8 @@ class CardSwiper {
         if (!this.isDragging) return;
         this.isDragging = false;
         
+        console.log('Drag end, isDragStarted:', this.isDragStarted);
+        
         // カーソルスタイルをリセット
         if (this.activeCard) {
             this.activeCard.style.cursor = 'grab';
@@ -290,6 +334,8 @@ class CardSwiper {
         const deltaY = this.currentPos.y - this.startPos.y;
         const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
         
+        console.log('Final distance:', distance, 'swipeThreshold:', this.swipeThreshold);
+        
         // イベントリスナーを削除
         document.removeEventListener('mousemove', this.onDragMove);
         document.removeEventListener('touchmove', this.onDragMove);
@@ -308,6 +354,7 @@ class CardSwiper {
                 direction = deltaY < 0 ? 'up' : 'down';
             }
             
+            console.log('Swipe triggered:', direction);
             this.triggerSwipe(direction);
         } else {
             // スワイプしなかった場合は元の位置に戻す
@@ -321,6 +368,7 @@ class CardSwiper {
                     }
                 }, 300);
             }
+            console.log('Swipe cancelled, returning to original position');
         }
     }
 
@@ -366,6 +414,12 @@ class CardSwiper {
                 this.options.onComplete(this.results);
             }
         }, 400); // Slightly longer for smoother feel
+    }
+
+    onTouchEnd(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Touch end event prevented');
     }
 }
 
