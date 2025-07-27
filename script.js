@@ -405,7 +405,19 @@ class AppManager {
             deleteSelectedBtn: document.getElementById('delete-selected-btn'),
             cancelEditBtn: document.getElementById('cancel-edit-btn'),
             myPlansContainer: document.querySelector('.my-plans-container'),
-            editActions: document.querySelector('.edit-actions')
+            editActions: document.querySelector('.edit-actions'),
+            // 追加のDOM要素
+            checkInSpotName: document.getElementById('check-in-spot-name'),
+            checkInSpotImage: document.getElementById('check-in-spot-image'),
+            endOfSwipeSpotName: document.getElementById('end-of-swipe-spot-name'),
+            endOfSwipeSpotImage: document.getElementById('end-of-swipe-spot-image'),
+            decisionContainer: document.querySelector('#decision-screen .decision-list'),
+            summaryContainer: document.querySelector('#plan-summary-screen .summary-timeline'),
+            summaryTitleInput: document.getElementById('summary-title-input'),
+            overallRatingContainer: document.getElementById('overall-rating-container'),
+            overallRatingValue: document.getElementById('overall-rating-value'),
+            overallStarsBackground: document.getElementById('overall-stars-background'),
+            swipeActions: document.querySelector('.swipe-actions')
         };
 
         this.currentPlan = { anchor: null, visitedSpots: [] };
