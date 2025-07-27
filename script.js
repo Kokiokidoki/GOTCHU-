@@ -413,21 +413,57 @@ class AppManager {
     }
 
     initAll() {
-        this.initNavigation();
-        this.initGlobalActionButtons();
-        this.initPlanningScreen();
-        this.initCheckInScreen();
-        this.initEndOfSwipeScreen();
-        this.initDecisionScreenActions();
-        this.initGlobalKeydownListener();
-        this.initStarRating();
-        this.initSavePlanButton();
-        this.initMyPlansEditMode();
-        
-        // ページ読み込み後にボタンサイズを確実に設定
-        setTimeout(() => {
-            this.setButtonSizes();
-        }, 100);
+        try {
+            console.log('Initializing navigation...');
+            this.initNavigation();
+            
+            console.log('Initializing global action buttons...');
+            this.initGlobalActionButtons();
+            
+            console.log('Initializing planning screen...');
+            this.initPlanningScreen();
+            
+            console.log('Initializing check-in screen...');
+            this.initCheckInScreen();
+            
+            console.log('Initializing end of swipe screen...');
+            this.initEndOfSwipeScreen();
+            
+            console.log('Initializing decision screen actions...');
+            this.initDecisionScreenActions();
+            
+            console.log('Initializing global keydown listener...');
+            this.initGlobalKeydownListener();
+            
+            console.log('Initializing star rating...');
+            this.initStarRating();
+            
+            console.log('Initializing save plan button...');
+            this.initSavePlanButton();
+            
+            console.log('Initializing my plans edit mode...');
+            this.initMyPlansEditMode();
+            
+            // ページ読み込み後にボタンサイズを確実に設定
+            setTimeout(() => {
+                console.log('Setting button sizes...');
+                this.setButtonSizes();
+            }, 100);
+            
+            console.log('All initialization completed successfully');
+        } catch (error) {
+            console.error('Error during initialization:', error);
+            // 重要な機能のみ再試行
+            setTimeout(() => {
+                try {
+                    this.initNavigation();
+                    this.initGlobalActionButtons();
+                    this.setButtonSizes();
+                } catch (retryError) {
+                    console.error('Failed to initialize critical features:', retryError);
+                }
+            }, 500);
+        }
     }
 
     initNavigation() {
@@ -1361,5 +1397,30 @@ class AppManager {
 
 // Initialize app when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    new AppManager();
+    try {
+        console.log('GOTCHU! App initializing...');
+        new AppManager();
+        console.log('GOTCHU! App initialized successfully');
+    } catch (error) {
+        console.error('Error initializing GOTCHU! App:', error);
+        // Fallback initialization
+        setTimeout(() => {
+            try {
+                new AppManager();
+                console.log('GOTCHU! App initialized on retry');
+            } catch (retryError) {
+                console.error('Failed to initialize app on retry:', retryError);
+            }
+        }, 1000);
+    }
+});
+
+// Add error handling for unhandled errors
+window.addEventListener('error', (event) => {
+    console.error('Unhandled error:', event.error);
+});
+
+// Add error handling for unhandled promise rejections
+window.addEventListener('unhandledrejection', (event) => {
+    console.error('Unhandled promise rejection:', event.reason);
 }); 
